@@ -54,7 +54,7 @@ src/main/java/sumdu/edu/ua/
 - **Database**: PostgreSQL (production), H2 (development)
 - **ORM**: Spring Data JPA / Hibernate
 - **Migrations**: Flyway
-- **Email**: Resend API with FreeMarker templates
+- **Email**: Resend API with FreeMarker templates (see [Email Limitations](#email-service-resend-limitations))
 - **Monitoring**: Spring Boot Actuator
 - **Build**: Maven
 - **Container**: Docker
@@ -232,6 +232,34 @@ Default admin credentials (local development):
 
 - Email: `admin@example.com`
 - Password: `admin`
+
+## Email Service (Resend Limitations)
+
+The application uses [Resend](https://resend.com) for sending confirmation emails. However, **Resend's free plan has significant limitations**:
+
+### Free Plan Restrictions
+
+| Restriction          | Description                                                      |
+| -------------------- | ---------------------------------------------------------------- |
+| **Recipient limit**  | Can only send emails to the Resend account owner's email address |
+| **No custom domain** | Must use `onboarding@resend.dev` as sender                       |
+| **Volume limit**     | 100 emails/day, 3,000 emails/month                               |
+
+### How It Works in This Application
+
+When a user registers:
+
+1. The application attempts to send a confirmation email via Resend
+2. **If successful**: User must click the confirmation link in the email
+3. **If failed** (e.g., recipient not allowed): User is **automatically activated** and can log in immediately
+
+This fallback behavior ensures the application remains functional for demonstration purposes without a verified domain.
+
+### Resend Dashboard
+
+![Resend Dashboard](screenshots/resend.png)
+
+_Screenshot showing successful email delivery to the account owner's email address._
 
 ## Conclusions
 

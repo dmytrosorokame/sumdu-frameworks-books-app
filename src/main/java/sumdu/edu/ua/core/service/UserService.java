@@ -85,7 +85,12 @@ public class UserService {
         if (emailSent) {
             log.info("Confirmation email sent to: {}", savedUser.getEmail());
         } else {
-            log.warn("Failed to send confirmation email to: {}", savedUser.getEmail());
+            // Auto-enable user if email sending fails (Resend free plan limitation)
+            log.warn("Failed to send confirmation email to: {}. Auto-enabling account.", savedUser.getEmail());
+            savedUser.setEnabled(true);
+            savedUser.setConfirmationCode(null);
+            userRepository.save(savedUser);
+            log.info("User {} auto-enabled due to email delivery restrictions", savedUser.getEmail());
         }
 
         return savedUser;

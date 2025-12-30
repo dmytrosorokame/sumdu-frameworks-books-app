@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{auth.login.title}">Вхід до системи</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            padding: 20px;
+        }
+        .login-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .login-header h1 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .login-header p {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);
+        }
+        .btn-login:active {
+            transform: translateY(0);
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        .message.error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .message.success {
+            background: #d1fae5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+        .register-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e1e5eb;
+        }
+        .register-link a {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .register-link a:hover {
+            color: #1e3c72;
+            text-decoration: underline;
+        }
+        /* Language selector styles */
+        .language-selector {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .current-lang {
+            color: #1e3c72;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            background: #f0f4f8;
+            border: 1px solid #e1e5eb;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 0.3rem;
+            min-width: 130px;
+            z-index: 1000;
+        }
+        .language-dropdown-content {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        .language-dropdown a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .language-dropdown a:hover {
+            background: #f0f4f8;
+        }
+        .language-dropdown a.active {
+            background: #1e3c72;
+            color: white;
+        }
+    </style>
+    <script>
+        function addLangParam(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('lang');
+            url.searchParams.set('lang', lang);
+            return url.toString();
+        }
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Language selector -->
+        <div class="language-selector">
+            <span class="current-lang" th:text="${#locale.language}">uk</span>
+            <div class="language-dropdown">
+                <div class="language-dropdown-content">
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'uk\'); return false;'"
+                       th:classappend="${#locale.language == 'uk'} ? 'active'">🇺🇦 Українська</a>
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'en\'); return false;'"
+                       th:classappend="${#locale.language == 'en'} ? 'active'">🇬🇧 English</a>
+                </div>
+            </div>
+        </div>
+        <div class="login-header">
+            <div class="icon">📚</div>
+            <h1 th:text="#{app.title}">Каталог книг</h1>
+            <p th:text="#{auth.login.subtitle}">Увійдіть до свого облікового запису</p>
+        </div>
+
+        <div th:if="${error}" class="message error">
+            <span th:text="${error}">Невірний логін або пароль</span>
+        </div>
+
+        <div th:if="${message}" class="message success">
+            <span th:text="${message}">Повідомлення</span>
+        </div>
+
+        <div th:if="${messageKey}" class="message success">
+            <span th:text="#{${messageKey}}">Повідомлення</span>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label for="email" th:text="#{auth.register.email}">Email</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       th:placeholder="#{auth.register.email.placeholder}"
+                       required 
+                       autofocus>
+            </div>
+
+            <div class="form-group">
+                <label for="password" th:text="#{auth.login.password}">Пароль</label>
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       th:placeholder="#{auth.login.password.placeholder}"
+                       required>
+            </div>
+
+            <button type="submit" class="btn-login" th:text="#{auth.login.submit}">Увійти</button>
+        </form>
+
+        <div class="register-link">
+            <span th:text="#{auth.login.no.account}">Немає облікового запису?</span> 
+            <a th:href="@{/register}" th:text="#{auth.register.link}">Зареєструватися</a>
+        </div>
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+    <header th:fragment="header">
+        <nav class="header-nav">
+            <div class="header-container">
+                <a class="header-logo" th:href="@{/books}" th:text="#{app.title}">Каталог книг</a>
+                <div class="header-menu">
+                    <a class="header-link" th:href="@{/books}" th:text="#{app.navigation.books}">Книги</a>
+                    <!-- Show "Add book" only for ADMIN -->
+                    <a sec:authorize="hasRole('ADMIN')" class="header-link" th:href="@{/books/add}" th:text="#{app.navigation.add}">Додати книгу</a>
+                    
+                    <div class="language-selector">
+                        <span class="current-lang" th:text="${#locale.language}">uk</span>
+                        <div class="language-dropdown">
+                            <div class="language-dropdown-content">
+                                <a href="#" 
+                                   th:onclick="'window.location.href = addLangParam(\'uk\'); return false;'"
+                                   th:classappend="${#locale.language == 'uk'} ? 'active'">🇺🇦 Українська</a>
+                                <a href="#" 
+                                   th:onclick="'window.location.href = addLangParam(\'en\'); return false;'"
+                                   th:classappend="${#locale.language == 'en'} ? 'active'">🇬🇧 English</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- User info and logout for authenticated users -->
+                    <div sec:authorize="isAuthenticated()" class="user-info">
+                        <span class="user-name">
+                            👤 <span sec:authentication="name">User</span>
+                            <span class="user-role" sec:authorize="hasRole('ADMIN')" th:text="'(' + #{auth.user.role.admin} + ')'">（Адмін)</span>
+                            <span class="user-role" sec:authorize="hasRole('USER') and !hasRole('ADMIN')" th:text="'(' + #{auth.user.role.user} + ')'">（Користувач)</span>
+                        </span>
+                        <form th:action="@{/logout}" method="post" class="logout-form" style="background: none;">
+                            <button type="submit" class="logout-btn" th:text="#{auth.logout}" 
+                                    style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">Вийти</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Login link for anonymous users -->
+                    <a sec:authorize="isAnonymous()" class="header-link login-link" th:href="@{/login}">Увійти</a>
+                    
+                    <script>
+                        function addLangParam(lang) {
+                            const url = new URL(window.location.href);
+                            url.searchParams.delete('lang');
+                            url.searchParams.set('lang', lang);
+                            return url.toString();
+                        }
+                    </script>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <style th:fragment="header-styles">
+        .header-nav {
+            background: #007bff;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header-logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .header-logo:hover {
+            color: #e0e0e0;
+        }
+        .header-menu {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .header-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .header-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+        .current-lang {
+            color: #1e3c72;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            background: #f0f4f8;
+            border: 1px solid #e1e5eb;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 0.3rem;
+            min-width: 130px;
+            z-index: 1000;
+        }
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        .language-dropdown-content {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .language-dropdown-content a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .language-dropdown-content a:hover {
+            background: #f0f4f8;
+        }
+        .language-dropdown-content a.active {
+            background: #1e3c72;
+            color: white;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-left: 1rem;
+            padding-left: 1rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .user-name {
+            color: white;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .user-role {
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+        .logout-form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            background: none !important;
+            background-color: transparent !important;
+        }
+        .header-nav button.logout-btn,
+        .header-nav .logout-form button,
+        button.logout-btn {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: white !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            padding: 0.4rem 0.8rem !important;
+            border-radius: 4px !important;
+            cursor: pointer !important;
+            font-size: 0.85rem !important;
+            transition: background 0.2s !important;
+        }
+        .header-nav button.logout-btn:hover,
+        .header-nav .logout-form button:hover,
+        button.logout-btn:hover {
+            background: rgba(255, 255, 255, 0.25) !important;
+        }
+        .login-link {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</body>
+</html>

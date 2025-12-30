@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{user.comments.title}">Коментарі користувача</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .comments-list {
+            list-style: none;
+            padding: 0;
+        }
+        .comment-item {
+            padding: 1.2rem;
+            margin: 0.8rem 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .comment-header {
+            margin-bottom: 0.6rem;
+        }
+        .comment-date {
+            font-size: 0.85em;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        .comment-text {
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        .comment-book-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .comment-book-link:hover {
+            text-decoration: underline;
+        }
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 1rem 0;
+        }
+    </style>
+    <div th:replace="~{fragments/header :: header-styles}"></div>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <a th:href="@{/books}" class="back-link">← <span th:text="#{user.comments.back.to.catalog}">Повернутись до каталогу</span></a>
+    <h1><span th:text="#{user.comments.title}">Коментарі користувача</span>: <span th:text="${email}">Email</span></h1>
+
+    <div th:if="${comments == null or comments.isEmpty()}" class="empty-state">
+        <p th:text="#{user.comments.empty}">Поки що немає коментарів</p>
+    </div>
+
+    <ul th:unless="${comments == null or comments.isEmpty()}" class="comments-list">
+        <li th:each="c : ${comments}" class="comment-item">
+            <div class="comment-header">
+                <p><strong th:text="${#temporals.format(c.createdAt, 'dd.MM.yyyy HH:mm')}">01.01.2024 12:00</strong></p>
+            </div>
+            <div class="comment-text" th:text="${c.text}">Comment text</div>
+            <p><span th:text="#{user.comments.book}">Книга</span>: <a th:href="@{/books/{id}(id=${c.bookId})}" class="comment-book-link" th:text="${c.bookTitle}">Book Title</a></p>
+            <hr>
+        </li>
+    </ul>
+</body>
+</html>
+
+

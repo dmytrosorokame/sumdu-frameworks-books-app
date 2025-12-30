@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{auth.register.title}">Реєстрація</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            padding: 20px;
+        }
+        .register-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .register-header .icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        .register-header h1 {
+            color: #1e3c72;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        .register-header p {
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1rem;
+            border: 2px solid #e1e5eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+        .btn-register {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+        }
+        .btn-register:active {
+            transform: translateY(0);
+        }
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        .message.error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e1e5eb;
+        }
+        .login-link a {
+            color: #2a5298;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .login-link a:hover {
+            color: #1e3c72;
+            text-decoration: underline;
+        }
+        .password-hint {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+        /* Language selector styles */
+        .language-selector {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .current-lang {
+            color: #1e3c72;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            background: #f0f4f8;
+            border: 1px solid #e1e5eb;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 0.3rem;
+            min-width: 130px;
+            z-index: 1000;
+        }
+        .language-dropdown-content {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        .language-dropdown a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .language-dropdown a:hover {
+            background: #f0f4f8;
+        }
+        .language-dropdown a.active {
+            background: #1e3c72;
+            color: white;
+        }
+    </style>
+    <script>
+        function addLangParam(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('lang');
+            url.searchParams.set('lang', lang);
+            return url.toString();
+        }
+    </script>
+</head>
+<body>
+    <div class="register-container">
+        <!-- Language selector -->
+        <div class="language-selector">
+            <span class="current-lang" th:text="${#locale.language}">uk</span>
+            <div class="language-dropdown">
+                <div class="language-dropdown-content">
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'uk\'); return false;'"
+                       th:classappend="${#locale.language == 'uk'} ? 'active'">🇺🇦 Українська</a>
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'en\'); return false;'"
+                       th:classappend="${#locale.language == 'en'} ? 'active'">🇬🇧 English</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="register-header">
+            <div class="icon">✨</div>
+            <h1 th:text="#{auth.register.title}">Реєстрація</h1>
+            <p th:text="#{auth.register.subtitle}">Створіть новий обліковий запис</p>
+        </div>
+
+        <div th:if="${error}" class="message error">
+            <span th:text="${error}">Помилка реєстрації</span>
+        </div>
+
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label for="firstName" th:text="#{auth.register.first.name}">Ім'я</label>
+                <input type="text" 
+                       id="firstName" 
+                       name="firstName" 
+                       th:placeholder="#{auth.register.first.name.placeholder}"
+                       required
+                       minlength="2"
+                       maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="lastName" th:text="#{auth.register.last.name}">Прізвище</label>
+                <input type="text" 
+                       id="lastName" 
+                       name="lastName" 
+                       th:placeholder="#{auth.register.last.name.placeholder}"
+                       required
+                       minlength="2"
+                       maxlength="50">
+            </div>
+
+            <div class="form-group">
+                <label for="email" th:text="#{auth.register.email}">Email</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       th:value="${email}"
+                       th:placeholder="#{auth.register.email.placeholder}"
+                       required
+                       autofocus
+                       maxlength="255">
+            </div>
+
+            <div class="form-group">
+                <label for="password" th:text="#{auth.login.password}">Пароль</label>
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       th:placeholder="#{auth.login.password.placeholder}"
+                       required
+                       minlength="4">
+                <div class="password-hint" th:text="#{auth.register.password.hint}">Мінімум 4 символи</div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword" th:text="#{auth.register.confirm.password}">Підтвердіть пароль</label>
+                <input type="password" 
+                       id="confirmPassword" 
+                       name="confirmPassword" 
+                       th:placeholder="#{auth.register.confirm.password.placeholder}"
+                       required
+                       minlength="4">
+            </div>
+
+            <button type="submit" class="btn-register" th:text="#{auth.register.submit}">Зареєструватися</button>
+        </form>
+
+        <div class="login-link">
+            <span th:text="#{auth.register.has.account}">Вже маєте обліковий запис?</span> 
+            <a th:href="@{/login}" th:text="#{auth.login.link}">Увійти</a>
+        </div>
+    </div>
+</body>
+</html>

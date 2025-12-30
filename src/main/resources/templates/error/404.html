@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{error.404.title}">Сторінку не знайдено - 404</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #1e3c72 100%);
+            padding: 20px;
+        }
+        .error-container {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+            position: relative;
+        }
+        .error-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+        .error-code {
+            font-size: 4rem;
+            font-weight: 700;
+            color: #1e3c72;
+            margin-bottom: 0.5rem;
+        }
+        .error-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .error-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        .btn-back {
+            display: inline-block;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(42, 82, 152, 0.4);
+        }
+        /* Language selector styles */
+        .language-selector {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+        }
+        .current-lang {
+            color: #1e3c72;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            display: inline-block;
+            background: #f0f4f8;
+            border: 1px solid #e1e5eb;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            padding-top: 0.3rem;
+            min-width: 130px;
+            z-index: 1000;
+        }
+        .language-dropdown-content {
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        .language-selector:hover .language-dropdown {
+            display: block;
+        }
+        .language-dropdown a {
+            display: block;
+            padding: 0.6rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+        .language-dropdown a:hover {
+            background: #f0f4f8;
+        }
+        .language-dropdown a.active {
+            background: #1e3c72;
+            color: white;
+        }
+    </style>
+    <script>
+        function addLangParam(lang) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('lang');
+            url.searchParams.set('lang', lang);
+            return url.toString();
+        }
+    </script>
+</head>
+<body>
+    <div class="error-container">
+        <!-- Language selector -->
+        <div class="language-selector">
+            <span class="current-lang" th:text="${#locale.language}">uk</span>
+            <div class="language-dropdown">
+                <div class="language-dropdown-content">
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'uk\'); return false;'"
+                       th:classappend="${#locale.language == 'uk'} ? 'active'">🇺🇦 Українська</a>
+                    <a href="#" 
+                       th:onclick="'window.location.href = addLangParam(\'en\'); return false;'"
+                       th:classappend="${#locale.language == 'en'} ? 'active'">🇬🇧 English</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-icon">🔍</div>
+        <div class="error-code">404</div>
+        <h1 class="error-title" th:text="#{error.404.heading}">Сторінку не знайдено</h1>
+        <p class="error-message" th:text="#{error.404.message}">
+            На жаль, сторінка, яку ви шукаєте, не існує або була переміщена.
+        </p>
+        <a th:href="@{/books}" class="btn-back" th:text="#{error.back.to.catalog}">← Повернутися до каталогу</a>
+    </div>
+</body>
+</html>

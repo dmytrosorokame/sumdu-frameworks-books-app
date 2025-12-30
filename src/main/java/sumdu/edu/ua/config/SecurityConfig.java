@@ -42,6 +42,8 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 // H2 Console - permit all (for development)
                 .requestMatchers("/h2-console/**").permitAll()
+                // Actuator health endpoint - permit all for monitoring
+                .requestMatchers("/actuator/health", "/actuator/info").permitAll()
                 // Login and registration - permit all
                 .requestMatchers("/login", "/register", "/confirm").permitAll()
                 // Error pages - permit all

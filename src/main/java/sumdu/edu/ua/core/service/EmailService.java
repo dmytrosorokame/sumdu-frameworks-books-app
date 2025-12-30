@@ -30,7 +30,7 @@ public class EmailService {
     @Value("${app.base-url:http://localhost:8080}")
     private String baseUrl;
 
-    @Value("${app.mail.admin:admin@example.com}")
+    @Value("${app.admin.email:admin@example.com}")
     private String adminEmail;
 
     @Value("${resend.api.key:}")

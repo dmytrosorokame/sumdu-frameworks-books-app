@@ -19,7 +19,6 @@ WHERE NOT EXISTS (
     FROM users
     WHERE email = 'admin@example.com'
   );
-
 -- Create a test comment that is 48 hours old (for testing "too old to delete" scenario)
 INSERT INTO comments (book_id, user_id, text, created_at)
 SELECT 1,
@@ -30,7 +29,6 @@ SELECT 1,
   ),
   'This is an OLD test comment (48 hours ago) - should NOT be deletable',
   CURRENT_TIMESTAMP - INTERVAL '48 hours';
-
 -- Create a test comment that is 2 hours old (for testing successful deletion)
 INSERT INTO comments (book_id, user_id, text, created_at)
 SELECT 1,

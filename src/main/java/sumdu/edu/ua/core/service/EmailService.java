@@ -88,6 +88,11 @@ public class EmailService {
             log.warn("Confirmation code for {}: {} - User can still confirm manually via /confirm?code={}", 
                     toEmail, confirmationCode, confirmationCode);
             return false;
+        } catch (Exception e) {
+            log.error("Unexpected error sending confirmation email to: {} - {}", toEmail, e.getMessage());
+            log.warn("Confirmation code for {}: {} - User can still confirm manually via /confirm?code={}", 
+                    toEmail, confirmationCode, confirmationCode);
+            return false;
         }
     }
 
@@ -125,6 +130,10 @@ public class EmailService {
             log.info("New book email sent successfully (id: {})", response.getId());
         } catch (ResendException e) {
             log.error("Failed to send email for book: {} by {}", book.getTitle(), book.getAuthor(), e);
+            // Don't throw exception - allow book creation to succeed even if email fails
+        } catch (Exception e) {
+            log.error("Unexpected error sending email for book: {} by {} - {}", 
+                    book.getTitle(), book.getAuthor(), e.getMessage());
             // Don't throw exception - allow book creation to succeed even if email fails
         }
     }
